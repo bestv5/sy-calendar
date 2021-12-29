@@ -36,11 +36,14 @@
 	目录结构：
 	
 	/sy-calendar/	
-===
-							|- index.html
-							|- assset
-							|- readme.md
-							|- widget.json
+	
+		|- index.html
+	
+		|- assset
+	
+		|- readme.md
+	
+		|- widget.json
 	
    
 
