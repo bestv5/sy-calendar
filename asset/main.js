@@ -1,4 +1,9 @@
 (function(){
+  const pattern = /(\d{4})(\d{2})(\d{2})/;
+  const syCalendarConfig = {
+    countPrePage : 10
+  };
+
   //思源api
   const SiyuanApi = {
     server_api_base:'',
@@ -38,6 +43,7 @@ var initCalendar = function(){
     $('#calendar').calendar({
       clickEvent:function(event){
         console.info(event);
+        showNoteList(event.event.data.day, 1);
       },
       clickNextBtn: function() {
         var calendar = $('#calendar').data('zui.calendar');
@@ -56,6 +62,8 @@ var initCalendar = function(){
      }
     });
     addCount(new Date().format('YYYYMM'));
+    
+
 }
 
 var cleanCalender = function(){
@@ -71,13 +79,14 @@ var callback = function(data){
     var newEvents = [];
       data.forEach((d)=>{
         if(d.count > 0){
-          var pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
-          var dateString= d.day + '000000';
-          var formatedDate = dateString.replace(pattern, '$1/$2/$3 $4:$5:$6');
-          newEvents.push({title: '笔记数:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate)})
+          var dateString= d.day;
+          var formatedDate = dateString.replace(pattern, '$1/$2/$3 00:00:00');
+          // newEvents.push({title: '待办:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate)});
+          newEvents.push({title: '笔记:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate),data:{'day':dateString}});
         }
       });
       calendar.addEvents(newEvents);
+      
     }
     
 };
@@ -94,6 +103,61 @@ var addCount = function (date) {
 // 初始化
   SiyuanApi.init('localhost',6806);
   initCalendar();
+
+//----------------------------------//
+
+window.notelook = function(noteId){
+  alert("正在开发");
+}
+window.nodegoto = function (noteId){
+    top.window.location.href="siyuan://blocks/"+noteId;
+}
+
+var showNoteList = function(day,page){
+
+  SiyuanApi.querySql(`select count(1) totalCount from blocks where type = 'd' and created like '${day}%'`,function(noteCount){
+  
+      SiyuanApi.querySql(`select id,name,content,* from blocks where type = 'd' and created like '${day}%' order by created desc `,function(notes){
+        console.info(notes);
+        var html = [];
+        notes.forEach((note)=>{
+          let action ='';
+          let name = `<a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');" target="_blank">${note.content}</a>`;
+          action +=  `<a href="javascript:void(0);" onclick="window.notelook('${note.id}');">查看</a>`;
+          // action += ` <a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');" target="_blank">转到</a>`;
+            html.push({'name':name,'action': action});
+        });
+        let dataSource = {
+              cols:[
+                  {name: 'name', label: '笔记标题',minWidth:450,html:true},
+                  {name: 'action', label: '动作', minWidth: 50,html:true},
+              ],
+              array:html
+          }
+        var myDataGrid = $('#myDataGrid').data('zui.datagrid');
+        if(!myDataGrid){
+          $('#myDataGrid').datagrid({
+              showHeader:false,
+              dataSource: dataSource,
+              states: {
+                pager: {page: 1, recPerPage: syCalendarConfig.countPrePage}
+            }
+          });
+          myDataGrid = $('#myDataGrid').data('zui.datagrid');
+        }
+        myDataGrid.setDataSource(dataSource);
+        myDataGrid.setPager(1,noteCount,syCalendarConfig.countPrePage);
+        $('#myDataGrid .datagrid-scrollbar-v').remove();
+        $('#myModal').modal('show');
+      });
+
+  });
+}
+
+
+
+
+
 })();
 
 

@@ -8,15 +8,42 @@
    <!-- ZUI 标准版压缩后的 CSS 文件 -->
     <link rel="stylesheet" href="asset/zui/dist/css/zui.min.css">
     <link href="asset/zui/dist/lib/calendar/zui.calendar.min.css" rel="stylesheet">
+    <link href="asset/zui/dist/lib/datagrid/zui.datagrid.min.css" rel="stylesheet">
+  
+    <style>
+        #myModal .sy-note-page{margin: 2px;}
+    </style>
   </head>
 <body>
     <div id="calendar" class="calendar"></div>
+    
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog sy-note-items">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title">笔记列表</h4>
+          </div>
+          <div class="modal-body" style="padding: 0px;">
+            <div id="myDataGrid" class="datagrid">
+              <div class="datagrid-container"></div>
+              <div class="pager sy-note-page"  data-elements="prev,next"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>  
+    
+      
+
+    
     <!-- ZUI Javascript 依赖 jQuery -->
     <script src="asset/zui/dist/lib/jquery/jquery.js"></script>
     <!-- ZUI 标准版压缩后的 JavaScript 文件 -->
     <script src="asset/zui/dist/js/zui.min.js"></script>
      <!-- ZUI 日历插件 -->
     <script src="asset/zui/dist/lib/calendar/zui.calendar.min.js"></script>
+    <script src="asset/zui/dist/lib/datagrid/zui.datagrid.min.js"></script>
      <!-- 自定义功能js -->
     <script src="asset/main.js"></script>
 
