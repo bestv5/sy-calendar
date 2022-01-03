@@ -107,7 +107,7 @@ var addCount = function (date) {
 //----------------------------------//
 
 window.notelook = function(noteId){
-  alert("正在开发");
+  alert("正在开发，请点击左侧标题跳转到笔记");
 }
 window.nodegoto = function (noteId){
     top.window.location.href="siyuan://blocks/"+noteId;
@@ -122,7 +122,7 @@ var showNoteList = function(day,page){
         var html = [];
         notes.forEach((note)=>{
           let action ='';
-          let name = `<a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');" target="_blank">${note.content}</a>`;
+          let name = `<a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');">${note.content}</a>`;
           action +=  `<a href="javascript:void(0);" onclick="window.notelook('${note.id}');">查看</a>`;
           // action += ` <a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');" target="_blank">转到</a>`;
             html.push({'name':name,'action': action});
