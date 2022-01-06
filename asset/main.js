@@ -17,13 +17,13 @@
 
 
     querySql:function(sql,callback){
-      var api_url = this.server_api_base + '/query/sql';
+      var api_url =  '/query/sql';
       let param = {"stmt": sql}
       this.doRequest(api_url,param,callback);
     },
     doRequest:function(url,data,callback){
       $.post(
-          url,JSON.stringify(data),'json'
+        this.server_api_base + url,JSON.stringify(data),'json'
       ).done(result => {
         if(result.code === 0){
             if(typeof callback == 'function'){
@@ -97,7 +97,19 @@ var addCount = function (date) {
   ) t group by t.day order by t.day asc
   `,callback);
 }
-
+var getElementOffset = function(element) {
+  element = element
+    ? element
+    : window.frameElement.parentElement || window.frameElement;
+  var result = { left: element.offsetLeft, top: element.offsetTop };
+  element.offsetParent ? (element = element.offsetParent) : null;
+  while (element) {
+    result["left"] += element.offsetLeft;
+    result["top"] += element.offsetTop;
+    element = element.offsetParent;
+  }
+  return result;
+};
 
 //----------------------------------//
 // 初始化
@@ -106,8 +118,52 @@ var addCount = function (date) {
 
 //----------------------------------//
 
-window.notelook = function(noteId){
-  alert("正在开发，请点击左侧标题跳转到笔记");
+window.notelook = function(event,noteId){
+  console.info(event);
+  setTimeout(function () {
+      let id = noteId;
+      id = id.replace("((", "").replace("))", "");
+      let 挂件坐标 = getElementOffset(window.frameElement);
+
+      let 虚拟链接 = top.document.createElement("span");
+      虚拟链接.setAttribute("data-type", "block-ref");
+      虚拟链接.setAttribute("data-id", id);
+      let 临时目标 = top.document.querySelector(
+        ".protyle-wysiwyg div[data-node-id] div[contenteditable]"
+      );
+      
+
+
+      console.info(event.screenY  + '，' + event.screenX);
+      虚拟链接.style = `position:fixed;top:${event.screenY}px;left:${event.screenX}px;`;
+      // 虚拟链接.style.top = event.screenY + 'px;';// 挂件坐标.top;
+      // 虚拟链接.style.left = event.screenX  + 'px;';// 挂件坐标.left;
+      console.info(虚拟链接);
+      临时目标.appendChild(虚拟链接);
+      let 点击事件 = top.document.createEvent("MouseEvents");
+      点击事件.initMouseEvent(
+        "mouseover",
+        true,
+        false,
+        window.parent,
+        1,
+        100,
+        100,
+        100,
+        100,
+        false,
+        false,
+        false,
+        false,
+        0,
+        null
+      );
+      虚拟链接.dispatchEvent(点击事件);
+      虚拟链接.remove();
+    //setTimeout(that.移动浮窗($event), 300);
+  }, 300);
+  
+
 }
 window.nodegoto = function (noteId){
     top.window.location.href="siyuan://blocks/"+noteId;
@@ -123,7 +179,7 @@ var showNoteList = function(day,page){
         notes.forEach((note)=>{
           let action ='';
           let name = `<a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');">${note.content}</a>`;
-          action +=  `<a href="javascript:void(0);" onclick="window.notelook('${note.id}');">查看</a>`;
+          action +=  `<a href="javascript:void(0);" onclick="window.notelook(event,'${note.id}');">查看</a>`;
           // action += ` <a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');" target="_blank">转到</a>`;
             html.push({'name':name,'action': action});
         });
