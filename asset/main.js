@@ -10,12 +10,13 @@
     server_ip : '127.0.0.1',
     server_port : '6806',
     init:function(ip,port){
-        console.info(top.siyuan.config)
-      
-
-        this.server_ip = ip;
-        this.server_port = port;
-        this.server_api_base = 'http://' + ip + ':' + port + '/api';
+        if(ip && ip != ''){
+          this.server_ip = ip;
+        }
+        if(port && port!=""){
+          this.server_port = port;
+        }
+        this.server_api_base = 'http://' +  this.server_ip + ':' +  this.server_port + '/api';
     },
 
 
@@ -116,7 +117,7 @@ var getElementOffset = function(element) {
 
 //----------------------------------//
 // 初始化
-  SiyuanApi.init('localhost',6806);
+  SiyuanApi.init('',6806);
   initCalendar();
 
 //----------------------------------//
