@@ -10,6 +10,9 @@
     server_ip : '127.0.0.1',
     server_port : '6806',
     init:function(ip,port){
+        console.info(top.siyuan.config)
+      
+
         this.server_ip = ip;
         this.server_port = port;
         this.server_api_base = 'http://' + ip + ':' + port + '/api';
@@ -118,12 +121,13 @@ var getElementOffset = function(element) {
 
 //----------------------------------//
 
-window.notelook = function(event,noteId){
+window.notelook = function(event){
   console.info(event);
-  setTimeout(function () {
+  let noteId = $(event.target).attr('data-id');
       let id = noteId;
       id = id.replace("((", "").replace("))", "");
       let 挂件坐标 = getElementOffset(window.frameElement);
+      console.info(挂件坐标);
 
       let 虚拟链接 = top.document.createElement("span");
       虚拟链接.setAttribute("data-type", "block-ref");
@@ -159,10 +163,22 @@ window.notelook = function(event,noteId){
         null
       );
       虚拟链接.dispatchEvent(点击事件);
-      虚拟链接.remove();
-    //setTimeout(that.移动浮窗($event), 300);
-  }, 300);
-  
+      
+  setTimeout(function(){
+    let find = false;
+    let panel = top.document.querySelector(`.block__popover[data-oid="${noteId}"]`);
+    console.info(panel);
+    if (panel) {
+      find = true;
+      panel.style.display = "none";
+      panel.style.top = 挂件坐标.top + "px";
+      panel.style.left = 挂件坐标.left +"px";
+      panel.style.display = "flex";
+      panel.style.height='400px';
+    }
+    虚拟链接.remove();
+    return;
+  }, 800);
 
 }
 window.nodegoto = function (noteId){
@@ -179,7 +195,7 @@ var showNoteList = function(day,page){
         notes.forEach((note)=>{
           let action ='';
           let name = `<a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');">${note.content}</a>`;
-          action +=  `<a href="javascript:void(0);" onclick="window.notelook(event,'${note.id}');">查看</a>`;
+          action +=  `<a href="javascript:void(0);" data-id="${note.id}" onclick="window.notelook(event,'${note.id}');">查看</a>`;
           // action += ` <a href="javascript:void(0);" onclick="window.nodegoto('${note.id}');" target="_blank">转到</a>`;
             html.push({'name':name,'action': action});
         });
