@@ -6,20 +6,8 @@
 
   //思源api
   const SiyuanApi = {
-    server_api_base:'',
-    server_ip : '127.0.0.1',
-    server_port : '6806',
-    init:function(ip,port){
-        if(ip && ip != ''){
-          this.server_ip = ip;
-        }
-        if(port && port!=""){
-          this.server_port = port;
-        }
-        this.server_api_base = 'http://' +  this.server_ip + ':' +  this.server_port + '/api';
-    },
-
-
+    server_api_base:'/api',
+    
     querySql:function(sql,callback){
       var api_url =  '/query/sql';
       let param = {"stmt": sql}
@@ -63,6 +51,12 @@ var initCalendar = function(){
         var calendar = $('#calendar').data('zui.calendar');
         console.info(calendar.date)
         addCount(calendar.date.format('YYYYMM'));
+     },
+     dayFormater: function($cell,date,events,cal ){
+       console.info($cell);
+       console.info(date);
+       console.info(events);
+       console.info(cal);
      }
     });
     addCount(new Date().format('YYYYMM'));
@@ -85,7 +79,7 @@ var callback = function(data){
         if(d.count > 0){
           var dateString= d.day;
           var formatedDate = dateString.replace(pattern, '$1/$2/$3 00:00:00');
-          // newEvents.push({title: '待办:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate)});
+          newEvents.push({title: '待办:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate)});
           newEvents.push({title: '笔记:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate),data:{'day':dateString}});
         }
       });
@@ -116,8 +110,6 @@ var getElementOffset = function(element) {
 };
 
 //----------------------------------//
-// 初始化
-  SiyuanApi.init('',6806);
   initCalendar();
 
 //----------------------------------//
