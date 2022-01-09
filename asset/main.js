@@ -6,6 +6,7 @@
 
   //思源api
   const SiyuanApi = {
+    // server_api_base:'http://127.0.0.1:6806/api',
     server_api_base:'/api',
     
     querySql:function(sql,callback){
@@ -53,10 +54,14 @@ var initCalendar = function(){
         addCount(calendar.date.format('YYYYMM'));
      },
      dayFormater: function($cell,date,events,cal ){
-       console.info($cell);
-       console.info(date);
-       console.info(events);
-       console.info(cal);
+      if($cell.find('div.nongli').length == 0){
+        let nongliData = calendarNong.solar2lunar(date.getFullYear(),date.getMonth()+1, date.getDate());
+        $cell.find('.heading').append(`<div class='nongli'> ${nongliData.IMonthCn}-${nongliData.IDayCn}</div>`);
+      } 
+      // if($cell.find('div.newNote').length == 0){
+      //   $cell.find('.heading').after(`<div class='newNote'><button class='btn btn-info btn-mini newNoteBtn'>新建日记</button></div>`);
+      // } 
+
      }
     });
     addCount(new Date().format('YYYYMM'));
@@ -79,7 +84,7 @@ var callback = function(data){
         if(d.count > 0){
           var dateString= d.day;
           var formatedDate = dateString.replace(pattern, '$1/$2/$3 00:00:00');
-          newEvents.push({title: '待办:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate)});
+          // newEvents.push({title: '新建日记:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate)});
           newEvents.push({title: '笔记:' + d.count, desc: '当前日期，你一共写了'+d.count+ '篇笔记',allDay:true, start: new Date(formatedDate),data:{'day':dateString}});
         }
       });
